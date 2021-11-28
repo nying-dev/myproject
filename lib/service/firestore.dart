@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:myproject/models/model.dart';
 
 class FirestoreUser {
   String userId;
@@ -11,11 +12,16 @@ class FirestoreUser {
   String municipality;
   String barangay;
   List<String> medical = [];
-
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   CollectionReference firestore =
       FirebaseFirestore.instance.collection('Users');
+  String Uid() {
+    User user = auth.currentUser;
+    String uid = user.uid;
+    return uid;
+  }
+
   Future<void> UserInfo({
     fname,
     lname,
@@ -26,9 +32,7 @@ class FirestoreUser {
     medical,
     gender,
   }) async {
-    final User user = auth.currentUser;
-    final uid = user.uid;
-    print(uid);
+    String uid = Uid() as String;
     print(
         '${fname},${lname},${gender},${birthdate},${province},${municipality},${barangay},${medical}');
     firestore
@@ -45,5 +49,20 @@ class FirestoreUser {
         })
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
+  }
+
+  // ignore: unused_element
+  Future<void> UploadMyCartToFirebase({MCartItem myCart}) async {
+    print(Uid() as String);
+    String uid = Uid() as String;
+    print(uid);
+
+    await firestore
+        .doc(uid)
+        .collection('Cart')
+        .doc(myCart.item.name)
+        .set(myCart.toJson())
+        .then((value) => print('add to cart'))
+        .catchError((e) => print(e));
   }
 }

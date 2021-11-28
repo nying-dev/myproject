@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/constants.dart';
 import 'package:myproject/models/model.dart';
+import 'package:myproject/screens/shop/widget/cart_screen.dart';
+import 'package:myproject/service/firestore.dart';
 import 'package:myproject/widget/custom_button.dart';
-
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'widgets/details.dart';
 import 'widgets/expandable.dart';
 import 'widgets/header.dart';
@@ -10,9 +12,9 @@ import 'widgets/header.dart';
 class ItemDetailsSreen extends StatelessWidget {
   static const routeName = 'item-details-screen/';
   final MGrocery item;
-
-  const ItemDetailsSreen({this.item});
-
+  FirestoreUser firestoreUser = FirestoreUser();
+  FirebaseAnalytics analytics;
+  ItemDetailsSreen({this.item});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +63,18 @@ class ItemDetailsSreen extends StatelessWidget {
                 child: RoundButton(
                   key: Key(''),
                   title: 'Add To Cart',
-                  onTap: () {},
+                  onTap: () {
+                    MCartItem mCartItem = MCartItem();
+
+                    firestoreUser.UploadMyCartToFirebase(
+                        myCart: MCartItem(item: item, count: 1));
+                    analytics.logEvent(
+                        name: 'purchase', parameters: mCartItem.toJson());
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ItemCartPage()));
+                  },
                 ),
               ),
             ],

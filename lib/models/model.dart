@@ -27,9 +27,30 @@ class MCategory {
 // Cart item model
 class MCartItem {
   final MGrocery item;
-  int cout;
+  int count = 0;
 
-  MCartItem({this.item, this.cout});
+  MCartItem({this.item, this.count});
+
+  dynamic toJson() => {
+        'name': item.name,
+        'url': item.url,
+        'description': item.description,
+        'price': item.price,
+        'quantity': count
+      };
+
+  factory MCartItem.fromJson(Map<String, dynamic> json) {
+    MGrocery mCategory = MGrocery(
+        name: json['name'],
+        url: json['url'],
+        description: json['description'],
+        price: json['price']);
+
+    return MCartItem(
+      item: mCategory,
+      count: json['quantity'],
+    );
+  }
 }
 
 class MGroceries {

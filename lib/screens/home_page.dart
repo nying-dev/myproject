@@ -54,7 +54,7 @@ class _HomepageState extends State<Homepage> {
             GestureDetector(
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ItemCart()));
+                    MaterialPageRoute(builder: (context) => ItemCartPage()));
               },
               child: Container(
                 child: SvgPicture.asset('assets/icon/cart.svg',
