@@ -35,15 +35,13 @@ class Header extends StatelessWidget {
                         child: Icon(Icons.chevron_left,
                             color: kBlackColor, size: 30),
                       ),
-                      SvgPicture.asset('assets/icon/share.svg'),
                     ],
                   ),
                   Hero(
                     tag: item.hashCode,
-                    child: Image.asset(
+                    child: Image.network(
                       item.url,
-                      width: constraints.maxWidth * 0.6,
-                      height: constraints.maxHeight * 0.6,
+                      scale: 4,
                       fit: BoxFit.contain,
                     ),
                   ),

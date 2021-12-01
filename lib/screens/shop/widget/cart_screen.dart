@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myproject/models/model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:myproject/service/firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ItemCartPage extends StatefulWidget {
@@ -36,6 +35,18 @@ class _ItemCart extends State<ItemCartPage> {
     });
   }
 
+  Future<void> delete(String id) {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    User user = auth.currentUser;
+    String uid = user.uid;
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(uid)
+        .collection('Cart')
+        .doc(id)
+        .delete();
+  }
+
   @override
   void initState() {
     _future = _getProducts();
@@ -67,30 +78,71 @@ class _ItemCart extends State<ItemCartPage> {
                   itemCount: cartList == null ? 0 : cartList.length,
                   itemBuilder: (BuildContext context, int index) {
                     MCartItem cartItem = cartList[index];
-                    return ListTile(
-                      title: Text((cartItem.item.price).toString()),
-                      leading: Image.asset(cartItem.item.url),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _incrementButton(counter: () {
-                            setState(() {
-                              cartItem.count++;
-                              checkOut();
-                            });
-                          }),
-                          Text(cartItem.count.toString()),
-                          _decrementButton(counter: () {
-                            setState(() {
-                              if (cartItem.count > 0) {
-                                cartItem.count--;
-                              }
-                              checkOut();
-                            });
-                          })
-                        ],
+                    return Column(children: [
+                      ListTile(
+                        title: Column(
+                          children: [
+                            Text(
+                              (cartItem.item.name).toString(),
+                              style: TextStyle(
+                                  fontSize: 10, fontWeight: FontWeight.bold),
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'PHP',
+                                  style: TextStyle(
+                                      fontSize: 8, color: Color(0xff0FA956)),
+                                ),
+                                Text('${cartItem.item.price}',
+                                    style: TextStyle(color: Color(0xff0FA956)))
+                              ],
+                            )
+                          ],
+                        ),
+                        leading: Image.network(
+                          cartItem.item.url,
+                          width: 50,
+                          height: 50,
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _incrementButton(counter: () {
+                              setState(() {
+                                cartItem.count++;
+                                checkOut();
+                              });
+                            }),
+                            Text(
+                              cartItem.count.toString(),
+                              overflow: TextOverflow.fade,
+                            ),
+                            _decrementButton(counter: () {
+                              setState(() {
+                                if (cartItem.count > 0) {
+                                  cartItem.count--;
+                                }
+                                checkOut();
+                              });
+                            }),
+                            Container(
+                              child: GestureDetector(
+                                onTap: () {
+                                  String id = cartItem.item.name.toString();
+                                  setState(() {
+                                    cartList.removeAt(index);
+                                    delete(id);
+                                  });
+                                },
+                                child: Icon(Icons.delete, color: Colors.green),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    );
+                      Divider(color: Colors.green)
+                    ]);
                   });
             } else {
               return Container();
@@ -106,7 +158,7 @@ class _ItemCart extends State<ItemCartPage> {
             Expanded(
               child: ListTile(
                 title: new Text("Total:"),
-                subtitle: Text('${total.toStringAsFixed(2)}'),
+                subtitle: Text('₱${total.toStringAsFixed(2)}'),
               ),
             ),
             Expanded(
@@ -121,69 +173,28 @@ class _ItemCart extends State<ItemCartPage> {
     );
   }
 
-  Widget _listItem(int index) {
-    return InkWell(
-        child: Container(
-      height: 120,
-      child: Row(
-        children: <Widget>[
-          Container(
-            width: 50,
-            margin: EdgeInsets.all(50),
-            height: 100,
-            child: Image.asset(
-              'assets/images/items/coca_cola.png',
-              width: 500,
-              height: 500,
-            ),
-            decoration: BoxDecoration(boxShadow: [
-              BoxShadow(
-                  color: Colors.black26,
-                  offset: Offset(0.0, 2.0),
-                  blurRadius: 25.0)
-            ]),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(40.0),
-            child: Row(
-              children: [
-                _incrementButton(counter: () {
-                  setState(() {
-                    print(index);
-
-                    index += 1;
-                  });
-                }),
-                Text('${index}', style: TextStyle(fontSize: 18.0)),
-                _decrementButton(counter: () {
-                  if (index > 0) {
-                    setState(() {
-                      print(index);
-                      index -= 1;
-                    });
-                  }
-                })
-              ],
-            ),
-          )
-        ],
-      ),
-    ));
-  }
-
 //button adding
   Widget _incrementButton({Function counter}) {
-    return FloatingActionButton(
-        child: Icon(Icons.add, color: Colors.black87),
-        backgroundColor: Colors.white,
-        onPressed: counter);
+    return Container(
+      height: 32,
+      width: 32,
+      margin: EdgeInsets.symmetric(horizontal: 6),
+      child: FloatingActionButton(
+          child: Icon(Icons.add, color: Colors.black87),
+          backgroundColor: Colors.white,
+          onPressed: counter),
+    );
   }
 
 //button decrement
   Widget _decrementButton({Function counter}) {
-    return FloatingActionButton(
-        child: new Icon(Icons.remove, color: Colors.black87),
-        backgroundColor: Colors.white,
-        onPressed: counter);
+    return Container(
+        height: 32,
+        width: 32,
+        margin: EdgeInsets.symmetric(horizontal: 6),
+        child: FloatingActionButton(
+            child: new Icon(Icons.remove, color: Colors.black87),
+            backgroundColor: Colors.white,
+            onPressed: counter));
   }
 }

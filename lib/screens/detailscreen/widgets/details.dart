@@ -38,7 +38,7 @@ class Details extends StatelessWidget {
           SizedBox(height: 20),
           Row(
             children: [
-              Text('\₱${item.price}',
+              Text('₱${item.price}',
                   style: Constants.kTitleStyle.copyWith(fontSize: 18))
             ],
           ),

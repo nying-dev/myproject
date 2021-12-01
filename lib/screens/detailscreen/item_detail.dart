@@ -9,14 +9,28 @@ import 'widgets/details.dart';
 import 'widgets/expandable.dart';
 import 'widgets/header.dart';
 
-class ItemDetailsSreen extends StatelessWidget {
-  static const routeName = 'item-details-screen/';
+class ItemDetailsSreen extends StatefulWidget {
   final MGrocery item;
-  FirestoreUser firestoreUser = FirestoreUser();
-  FirebaseAnalytics analytics;
   ItemDetailsSreen({this.item});
   @override
+  _ItemDetailsScreenState createState() => _ItemDetailsScreenState();
+}
+
+class _ItemDetailsScreenState extends State<ItemDetailsSreen> {
+  static const routeName = 'item-details-screen/';
+
+  FirestoreUser firestoreUser = FirestoreUser();
+  FirebaseAnalytics analytics;
+  var _myColorOne = Colors.grey;
+  var _myColorTwo = Colors.grey;
+  var _myColorThree = Colors.grey;
+  var _myColorFour = Colors.grey;
+  var _myColorFive = Colors.grey;
+  int rating = 0;
+
+  @override
   Widget build(BuildContext context) {
+    final MGrocery item = widget.item;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -45,16 +59,69 @@ class ItemDetailsSreen extends StatelessWidget {
               ),
               Divider(color: kBorderColor, indent: 15, endIndent: 15),
               Expandable(
-                title: 'Reviews',
-                trailing: Row(
-                  children: List.generate(
-                      5,
-                      (index) => Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                            size: 20,
-                          )),
-                ),
+                title: 'Ratings',
+                trailing: Row(children: <Widget>[
+                  IconButton(
+                    icon: new Icon(Icons.star),
+                    onPressed: () => setState(() {
+                      _myColorOne = Colors.orange;
+                      _myColorTwo = null;
+                      _myColorThree = null;
+                      _myColorFour = null;
+                      _myColorFive = null;
+                      rating = 1;
+                    }),
+                    color: _myColorOne,
+                  ),
+                  IconButton(
+                    icon: new Icon(Icons.star),
+                    onPressed: () => setState(() {
+                      _myColorOne = Colors.orange;
+                      _myColorTwo = Colors.orange;
+                      _myColorThree = Colors.grey;
+                      _myColorFour = Colors.grey;
+                      _myColorFive = Colors.grey;
+                      rating = 2;
+                    }),
+                    color: _myColorTwo,
+                  ),
+                  IconButton(
+                    icon: new Icon(Icons.star),
+                    onPressed: () => setState(() {
+                      _myColorOne = Colors.orange;
+                      _myColorTwo = Colors.orange;
+                      _myColorThree = Colors.orange;
+                      _myColorFour = Colors.grey;
+                      _myColorFive = Colors.grey;
+                      rating = 3;
+                    }),
+                    color: _myColorThree,
+                  ),
+                  IconButton(
+                    icon: new Icon(Icons.star),
+                    onPressed: () => setState(() {
+                      _myColorOne = Colors.orange;
+                      _myColorTwo = Colors.orange;
+                      _myColorThree = Colors.orange;
+                      _myColorFour = Colors.orange;
+                      _myColorFive = Colors.grey;
+                      rating = 4;
+                    }),
+                    color: _myColorFour,
+                  ),
+                  IconButton(
+                    icon: new Icon(Icons.star),
+                    onPressed: () => setState(() {
+                      _myColorOne = Colors.orange;
+                      _myColorTwo = Colors.orange;
+                      _myColorThree = Colors.orange;
+                      _myColorFour = Colors.orange;
+                      _myColorFive = Colors.orange;
+                      rating = 5;
+                    }),
+                    color: _myColorFive,
+                  ),
+                ]),
                 description: '',
               ),
               SizedBox(height: 30),
@@ -65,11 +132,9 @@ class ItemDetailsSreen extends StatelessWidget {
                   title: 'Add To Cart',
                   onTap: () {
                     MCartItem mCartItem = MCartItem();
-
+                    item.rating = rating;
                     firestoreUser.UploadMyCartToFirebase(
-                        myCart: MCartItem(item: item, count: 1));
-                    analytics.logEvent(
-                        name: 'purchase', parameters: mCartItem.toJson());
+                        myCart: MCartItem(item: item, count: 0));
                     Navigator.push(
                         context,
                         MaterialPageRoute(

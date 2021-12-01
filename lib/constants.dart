@@ -17,7 +17,7 @@ class Constants {
   static const regularDarkText = TextStyle(
       fontSize: 16.0, fontWeight: FontWeight.w600, color: Colors.black);
   static const kTitleStyle = TextStyle(
-      fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xff181725));
+      fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xff181725));
   static const kDescriptionStyle =
       TextStyle(color: kSubtitleColor, fontSize: 13);
 }

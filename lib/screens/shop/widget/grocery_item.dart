@@ -34,15 +34,16 @@ class GroceryItem extends StatelessWidget {
               children: [
                 Hero(
                   tag: item.hashCode,
-                  child: Image.asset(
+                  child: Image.network(
                     item.url,
-                    height: constraints.maxHeight * 0.4,
+                    height: constraints.maxHeight * 0.29,
+                    errorBuilder: (context, error, stackTrace) {
+                      print(error);
+                    },
                   ),
                 ),
                 SizedBox(height: 10),
                 Text(item.name, style: Constants.kTitleStyle),
-                Text(item.description, style: Constants.kDescriptionStyle),
-                Spacer(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -50,18 +51,6 @@ class GroceryItem extends StatelessWidget {
                       '\₱${item.price}',
                       style: Constants.kTitleStyle
                           .copyWith(fontWeight: FontWeight.w700),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(7),
-                      decoration: BoxDecoration(
-                        color: kPrimaryColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Icon(
-                        Icons.add,
-                        size: 20,
-                        color: Colors.white,
-                      ),
                     ),
                   ],
                 ),
