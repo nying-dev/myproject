@@ -8,6 +8,7 @@ class ExclusiveOffers extends StatefulWidget {
   ExclusiveOffers({
     Key key,
   });
+
   @override
   _ExclusiveOffersState createState() => _ExclusiveOffersState();
 }
@@ -19,7 +20,7 @@ class _ExclusiveOffersState extends State<ExclusiveOffers> {
   Future<List<MGrocery>> _getItmes() async {
     final queryItems = await FirebaseFirestore.instance
         .collection('INVENTORY')
-        .limit(12)
+        .where("category", isEqualTo: "Condiments")
         .get();
     List<QueryDocumentSnapshot> docs = queryItems.docs;
     final itemlist = docs.map((doc) => MGrocery.fromJson(doc.data())).toList();
@@ -32,33 +33,6 @@ class _ExclusiveOffersState extends State<ExclusiveOffers> {
     _future = _getItmes();
     super.initState();
   }
-
-  // final List<MGrocery> _items = [
-  //   MGrocery(
-  //     name: 'Organic Bananas',
-  //     url: 'assets/images/items/bananas.png',
-  //     description: '7pcs',
-  //     price: 4.99,
-  //   ),
-  //   MGrocery(
-  //     name: 'Red Apple',
-  //     url: 'assets/images/items/apples.png',
-  //     description: '1kg',
-  //     price: 5.99,
-  //   ),
-  //   MGrocery(
-  //     name: 'Red Pepper',
-  //     url: 'assets/images/items/pepper.png',
-  //     description: '1kg',
-  //     price: 3.99,
-  //   ),
-  //   MGrocery(
-  //     name: 'coca-cola',
-  //     url: 'assets/images/items/coca_cola.png',
-  //     description: '100ml',
-  //     price: 20.99,
-  //   ),
-  // ];
 
   @override
   Widget build(BuildContext context) {
