@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/models/model.dart';
 import 'package:myproject/screens/detailscreen/item_detail.dart';
+import 'package:flutter_image/network.dart';
 
 import 'package:myproject/constants.dart';
 import 'package:myproject/mq.dart';
@@ -38,7 +39,7 @@ class GroceryItem extends StatelessWidget {
                     item.url,
                     height: constraints.maxHeight * 0.29,
                     errorBuilder: (context, error, stackTrace) {
-                      print(error);
+                      return Image(image: NetworkImageWithRetry(item.url));
                     },
                   ),
                 ),

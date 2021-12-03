@@ -5,6 +5,7 @@ import 'package:myproject/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:myproject/mq.dart';
 
+import 'widget/categoryselection.dart';
 import 'widget/banners.dart';
 import 'widget/exclusive.dart';
 
@@ -24,12 +25,14 @@ class ShopScreen extends StatelessWidget {
               Banners(
                 key: Key(''),
               ),
-              _buildSectiontitle('Recommend for you', () {}),
+              _buildSectiontitle("Category", () {}),
+              SelectionCategory(),
+              _buildSectiontitle('Recommend for you', () {
+                print("recommend for you");
+              }),
               ExclusiveOffers(
                 key: Key(''),
               ),
-              SizedBox(height: 10),
-              _buildSectiontitle('Best Sellings', () {}),
             ],
           ),
         ),
