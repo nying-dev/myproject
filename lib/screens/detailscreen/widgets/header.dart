@@ -20,9 +20,7 @@ class Header extends StatelessWidget {
         child: Container(
           padding:
               const EdgeInsets.only(left: 10, right: 15, top: 20, bottom: 20),
-          decoration: BoxDecoration(
-            color: kSecondaryColor,
-          ),
+          decoration: BoxDecoration(),
           child: LayoutBuilder(
             builder: (_, constraints) {
               return Column(
@@ -37,14 +35,14 @@ class Header extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Hero(
+                  Expanded(
+                      child: Hero(
                     tag: item.hashCode,
                     child: Image.network(
                       item.url,
-                      scale: 4,
                       fit: BoxFit.contain,
                     ),
-                  ),
+                  )),
                 ],
               );
             },

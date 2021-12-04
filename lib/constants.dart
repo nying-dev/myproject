@@ -6,7 +6,7 @@ final Color kPrimaryColor = Color(0xff53B175);
 final Color kShadowColor = Color(0xffA8A8A8);
 const Color kBlackColor = Color(0xff181725);
 const Color kSubtitleColor = Color(0xff7C7C7C);
-final Color kSecondaryColor = Color(0xffF2F3F2);
+final Color kSecondaryColor = Color(0xffffffff);
 final Color kBorderColor = Color(0xffE2E2E2);
 
 class Constants {

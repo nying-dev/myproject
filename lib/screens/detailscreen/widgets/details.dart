@@ -20,10 +20,14 @@ class Details extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              Expanded(
+                  child: Text(
                 item.name,
                 style: Constants.kTitleStyle.copyWith(fontSize: 18),
-              ),
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                maxLines: 2,
+              )),
               SvgPicture.asset(
                 'assets/icons/favorite.svg',
                 color: kBlackColor.withOpacity(0.7),
