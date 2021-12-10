@@ -11,7 +11,8 @@ import 'widgets/header.dart';
 
 class ItemDetailsSreen extends StatefulWidget {
   final MGrocery item;
-  ItemDetailsSreen({this.item});
+  final String itemId;
+  ItemDetailsSreen({this.item, this.itemId});
   @override
   _ItemDetailsScreenState createState() => _ItemDetailsScreenState();
 }
@@ -131,10 +132,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsSreen> {
                   key: Key(''),
                   title: 'Add To Cart',
                   onTap: () {
-                    MCartItem mCartItem = MCartItem();
-                    item.rating = rating;
-                    firestoreUser.UploadMyCartToFirebase(
-                        myCart: MCartItem(item: item, count: 0));
+                    firestoreUser.setCart(itemId: item.id);
                     Navigator.push(
                         context,
                         MaterialPageRoute(

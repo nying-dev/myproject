@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:myproject/models/model.dart';
+import 'package:myproject/service/firestore.dart';
 import 'package:myproject/mq.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:myproject/screens/shop/widget/grocery_item.dart';
@@ -130,20 +131,11 @@ class CategoryItem extends StatefulWidget {
 class _categoryItemState extends State<CategoryItem> {
   Future<List<MGrocery>> _items;
   List<MGrocery> itemList = [];
-
-  Future<List<MGrocery>> _getItmes() async {
-    final queryItems = await FirebaseFirestore.instance
-        .collection('INVENTORY')
-        .where("category", isEqualTo: widget.database)
-        .get();
-    List<QueryDocumentSnapshot> docs = queryItems.docs;
-    final itemlist = docs.map((doc) => MGrocery.fromJson(doc.data())).toList();
-    return itemlist;
-  }
+  FirestoreUser firestoreUser = FirestoreUser();
 
   @override
   void initState() {
-    _items = _getItmes();
+    _items = firestoreUser.getItmes(widget.database);
     super.initState();
   }
 
@@ -175,7 +167,8 @@ class _categoryItemState extends State<CategoryItem> {
                       crossAxisSpacing: 10),
                   itemCount: itemList.length,
                   itemBuilder: (context, index) {
-                    return GroceryItem(item: itemList[index]);
+                    return GroceryItem(
+                        item: itemList[index], itemId: itemList[index].id);
                   });
             } else {
               return Container();

@@ -15,6 +15,8 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   PageController _tabsPageController = PageController();
   int _selectedTab = 0;
+  String firstWord = 'My ';
+  String sencondWord = 'Grocery';
 
   @override
   void initState() {
@@ -25,6 +27,7 @@ class _HomepageState extends State<Homepage> {
   @override
   void dispose() {
     _tabsPageController.dispose();
+
     super.dispose();
   }
 
@@ -37,13 +40,11 @@ class _HomepageState extends State<Homepage> {
           title: RichText(
               // ignore: unnecessary_new
               text: new TextSpan(
-            style: new TextStyle(
-              fontSize: 20.0,
-              color: Colors.white,
-            ),
+            style: new TextStyle(fontSize: 20.0, color: Colors.white),
             children: <TextSpan>[
-              new TextSpan(text: 'My ', style: TextStyle(color: Colors.yellow)),
-              new TextSpan(text: 'Grocery'),
+              new TextSpan(
+                  text: firstWord, style: TextStyle(color: Colors.yellow)),
+              new TextSpan(text: sencondWord)
             ],
           )),
           backgroundColor: Colors.green,
@@ -94,6 +95,7 @@ class _HomepageState extends State<Homepage> {
             BottomTabs(
               selectedTab: _selectedTab,
               tabPressed: (num) {
+                headTittle(num);
                 _tabsPageController.animateToPage(num,
                     duration: Duration(milliseconds: 300),
                     curve: Curves.easeInCubic);
@@ -101,5 +103,21 @@ class _HomepageState extends State<Homepage> {
             )
           ],
         ));
+  }
+
+  void headTittle(num) {
+    if (num == 0) {
+      firstWord = 'My ';
+      sencondWord = 'Grocery';
+    } else if (num == 1) {
+      firstWord = 'C';
+      sencondWord = 'ategory';
+    } else if (num == 2) {
+      firstWord = 'N';
+      sencondWord = 'otify';
+    } else if (num == 3) {
+      firstWord = 'U';
+      sencondWord = 'ser';
+    }
   }
 }

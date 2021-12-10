@@ -8,9 +8,8 @@ import 'package:myproject/mq.dart';
 
 class GroceryItem extends StatelessWidget {
   final MGrocery item;
-  const GroceryItem({
-    this.item,
-  });
+  final String itemId;
+  const GroceryItem({this.item, this.itemId});
 
   void onTap(BuildContext context) {
     Navigator.of(context)

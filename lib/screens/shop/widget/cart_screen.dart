@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:myproject/models/model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:myproject/service/firestore.dart';
+import 'checkout.dart';
+import 'dart:async';
 
 class ItemCartPage extends StatefulWidget {
   @override
@@ -13,38 +16,44 @@ class _ItemCart extends State<ItemCartPage> {
   Future<List<MCartItem>> _future;
   double total = 0.0;
   List<MCartItem> cartList = [];
+  List<MCartItem> list = [];
+  FirestoreUser firestoreUser = FirestoreUser();
+
+  //get product list
   Future<List<MCartItem>> _getProducts() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     User user = auth.currentUser;
     String uid = user.uid;
+
     final querySnapshot = await FirebaseFirestore.instance
-        .collection('Users')
-        .doc(uid)
         .collection('Cart')
+        .where('costumer_id', isEqualTo: uid)
         .get();
+
     List<QueryDocumentSnapshot> docs = querySnapshot.docs;
-    final cartList = docs.map((doc) => MCartItem.fromJson(doc.data())).toList();
+    final cartList = await Future.wait(docs
+        .map((doc) async => MCartItem.fromJson(doc.data(),
+            await firestoreUser.getItem(doc.data()['product_id']), doc.id))
+        .toList());
     return cartList;
   }
 
   checkOut() {
     total = 0.0;
-
     cartList.forEach((element) {
       total += (element.item.price * element.count);
     });
+  }
+
+  Future updateQuantity() {
+    firestoreUser.updateCart(cartList);
   }
 
   Future<void> delete(String id) {
     final FirebaseAuth auth = FirebaseAuth.instance;
     User user = auth.currentUser;
     String uid = user.uid;
-    FirebaseFirestore.instance
-        .collection('Users')
-        .doc(uid)
-        .collection('Cart')
-        .doc(id)
-        .delete();
+    FirebaseFirestore.instance.collection('Cart').doc(id).delete();
   }
 
   @override
@@ -57,6 +66,14 @@ class _ItemCart extends State<ItemCartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Builder(builder: (BuildContext context) {
+          return IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
+                updateQuantity();
+              });
+        }),
         title: Text(
           "Your Cart",
           style: TextStyle(fontSize: 20.0, color: Colors.white),
@@ -68,7 +85,7 @@ class _ItemCart extends State<ItemCartPage> {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
       ),
-      //future Builder
+      // future Builder
       body: FutureBuilder(
           future: _future,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -77,13 +94,13 @@ class _ItemCart extends State<ItemCartPage> {
               return ListView.builder(
                   itemCount: cartList == null ? 0 : cartList.length,
                   itemBuilder: (BuildContext context, int index) {
-                    MCartItem cartItem = cartList[index];
+                    cartList[index];
                     return Column(children: [
                       ListTile(
                         title: Column(
                           children: [
                             Text(
-                              (cartItem.item.name).toString(),
+                              (cartList[index].item.name).toString(),
                               style: TextStyle(
                                   fontSize: 10, fontWeight: FontWeight.bold),
                             ),
@@ -94,14 +111,14 @@ class _ItemCart extends State<ItemCartPage> {
                                   style: TextStyle(
                                       fontSize: 8, color: Color(0xff0FA956)),
                                 ),
-                                Text('${cartItem.item.price}',
+                                Text('${cartList[index].item.price}',
                                     style: TextStyle(color: Color(0xff0FA956)))
                               ],
                             )
                           ],
                         ),
                         leading: Image.network(
-                          cartItem.item.url,
+                          cartList[index].item.url,
                           width: 50,
                           height: 50,
                         ),
@@ -110,18 +127,18 @@ class _ItemCart extends State<ItemCartPage> {
                           children: [
                             _incrementButton(counter: () {
                               setState(() {
-                                cartItem.count++;
+                                cartList[index].count++;
                                 checkOut();
                               });
                             }),
                             Text(
-                              cartItem.count.toString(),
+                              cartList[index].count.toString(),
                               overflow: TextOverflow.fade,
                             ),
                             _decrementButton(counter: () {
                               setState(() {
-                                if (cartItem.count > 0) {
-                                  cartItem.count--;
+                                if (cartList[index].count > 0) {
+                                  cartList[index].count--;
                                 }
                                 checkOut();
                               });
@@ -129,7 +146,7 @@ class _ItemCart extends State<ItemCartPage> {
                             Container(
                               child: GestureDetector(
                                 onTap: () {
-                                  String id = cartItem.item.name.toString();
+                                  String id = cartList[index].id;
                                   setState(() {
                                     cartList.removeAt(index);
                                     delete(id);
@@ -157,14 +174,22 @@ class _ItemCart extends State<ItemCartPage> {
           children: <Widget>[
             Expanded(
               child: ListTile(
-                title: new Text("Total:"),
+                title: const Text("Total:"),
                 subtitle: Text('₱${total.toStringAsFixed(2)}'),
               ),
             ),
             Expanded(
-                child: new MaterialButton(
-                    onPressed: () {},
-                    child: new Text("Check out",
+                child: MaterialButton(
+                    onPressed: () {
+                      CheckOutPage(
+                        myOrderList: cartList,
+                      );
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CheckOutPage()));
+                    },
+                    child: const Text("Check out",
                         style: TextStyle(color: Colors.white)),
                     color: Colors.green))
           ],
@@ -178,9 +203,9 @@ class _ItemCart extends State<ItemCartPage> {
     return Container(
       height: 32,
       width: 32,
-      margin: EdgeInsets.symmetric(horizontal: 6),
+      margin: const EdgeInsets.symmetric(horizontal: 6),
       child: FloatingActionButton(
-          child: Icon(Icons.add, color: Colors.black87),
+          child: const Icon(Icons.add, color: Colors.black87),
           backgroundColor: Colors.white,
           onPressed: counter),
     );
@@ -191,9 +216,9 @@ class _ItemCart extends State<ItemCartPage> {
     return Container(
         height: 32,
         width: 32,
-        margin: EdgeInsets.symmetric(horizontal: 6),
+        margin: const EdgeInsets.symmetric(horizontal: 6),
         child: FloatingActionButton(
-            child: new Icon(Icons.remove, color: Colors.black87),
+            child: const Icon(Icons.remove, color: Colors.black87),
             backgroundColor: Colors.white,
             onPressed: counter));
   }

@@ -271,7 +271,7 @@ class _PersonalFormState extends State<PersonalFormPage> {
   Future _submitForm() async {
     FirestoreUser firestoreUser = FirestoreUser();
     // ignore: avoid_print
-    firestoreUser.UserInfo(
+    firestoreUser.setUserInfo(
         lname: l_name,
         fname: f_name,
         gender: gendr,

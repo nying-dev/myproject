@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 // Grocery item model
 class MGrocery {
@@ -16,8 +17,9 @@ class MGrocery {
       this.rating,
       this.id});
 
-  factory MGrocery.fromJson(Map<String, dynamic> json) {
+  factory MGrocery.fromJson(Map<String, dynamic> json, String id) {
     return MGrocery(
+        id: id,
         name: json['productName'],
         description: json['productDescription'],
         price: json['price'].toDouble(),
@@ -35,29 +37,24 @@ class MCategory {
 
 // Cart item model
 class MCartItem {
-  final MGrocery item;
+  final String id;
+  final String Productid;
+  final String Costumerid;
   int count = 0;
-
-  MCartItem({this.item, this.count});
+  final MGrocery item;
+  MCartItem({this.Productid, this.Costumerid, this.count, this.item, this.id});
 
   dynamic toJson() => {
-        'name': item.name,
-        'url': item.url,
-        'description': item.description,
-        'price': item.price,
+        'product_id': Productid,
+        'costumer_id': Costumerid,
         'quantity': count,
-        'rating': item.rating
       };
 
-  factory MCartItem.fromJson(Map<String, dynamic> json) {
-    MGrocery mCategory = MGrocery(
-        name: json['name'],
-        url: json['url'],
-        description: json['description'],
-        price: json['price']);
-
+  factory MCartItem.fromJson(
+      Map<String, dynamic> json, MGrocery item, String idCart) {
     return MCartItem(
-      item: mCategory,
+      id: idCart,
+      item: item,
       count: json['quantity'],
     );
   }
@@ -69,4 +66,45 @@ class MGroceries {
   final String url;
 
   MGroceries({this.title, this.color, this.url});
+}
+
+class ODetails {
+  final String id;
+  final String costumerid;
+  final String cartid;
+  final DateFormat orderdate;
+  final DateFormat deliverdate;
+  final String status;
+  final String addressdeliv;
+  final String payMethod;
+  ODetails(
+      {this.id,
+      this.costumerid,
+      this.cartid,
+      this.orderdate,
+      this.deliverdate,
+      this.status,
+      this.addressdeliv,
+      this.payMethod});
+
+  dynamic toJson() => {
+        'costumer_id': costumerid,
+        'cart_id': cartid,
+        'orderDate': orderdate,
+        'deliveryAddress': addressdeliv,
+        'paymentMethod': payMethod,
+        'deliveryDate': deliverdate,
+        'deliveryStatus': status
+      };
+
+  factory ODetails.fromJson(Map<String, dynamic> json) {
+    return ODetails(
+        costumerid: json['costumer_id'],
+        cartid: json['cart_id'],
+        orderdate: json['orderDate'],
+        addressdeliv: json['deliveryAddress'],
+        payMethod: json['PaymentMethod'],
+        deliverdate: json['deliveryDate'],
+        status: json['deliveryStatus']);
+  }
 }
