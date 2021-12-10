@@ -1,28 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myproject/models/model.dart';
+import 'dart:async';
 
 class FirestoreUser {
-  String userId;
-  String fname;
-  String lname;
-  String birthdate;
-  String province;
-  String gender;
-  String municipality;
-  String barangay;
-  List<String> medical = [];
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  CollectionReference firestore =
+  CollectionReference collectionUser =
       FirebaseFirestore.instance.collection('Users');
+  CollectionReference collectionCart =
+      FirebaseFirestore.instance.collection('Cart');
+  CollectionReference collectionOrder =
+      FirebaseFirestore.instance.collection('Order');
+
   String Uid() {
     User user = auth.currentUser;
     String uid = user.uid;
     return uid;
   }
 
-  Future<void> UserInfo({
+  Future<void> setUserInfo({
     fname,
     lname,
     birthdate,
@@ -33,9 +30,7 @@ class FirestoreUser {
     gender,
   }) async {
     String uid = Uid() as String;
-    print(
-        '${fname},${lname},${gender},${birthdate},${province},${municipality},${barangay},${medical}');
-    firestore
+    collectionUser
         .doc(uid)
         .set({
           'firstname': fname ?? '',
@@ -51,18 +46,68 @@ class FirestoreUser {
         .catchError((error) => print("Failed to add user: $error"));
   }
 
-  // ignore: unused_element
-  Future<void> UploadMyCartToFirebase({MCartItem myCart}) async {
-    print(Uid() as String);
-    String uid = Uid() as String;
-    print(uid);
-
-    await firestore
-        .doc(uid)
-        .collection('Cart')
-        .doc(myCart.item.name)
-        .set(myCart.toJson())
-        .then((value) => print('add to cart'))
-        .catchError((e) => print(e));
+  Future<void> getUserInfo() async {
+    final info = await collectionUser.doc(Uid()).get();
+    return info.data();
   }
+
+  // ignore: unused_element
+  Future<void> setCart({String itemId}) async {
+    print('firestore');
+    String uid = Uid() as String;
+    MCartItem myCart = MCartItem(Productid: itemId, Costumerid: uid, count: 0);
+
+    final QuerySnapshot collLength = await collectionCart.get();
+    if (collLength.size > 0) {
+      collectionCart
+          .where('product_id', isEqualTo: itemId)
+          .get()
+          .then((value) => {
+                print(value.docs.isEmpty),
+                if (value.docs.isEmpty)
+                  {
+                    collectionCart
+                        .doc()
+                        .set(myCart.toJson())
+                        .then((value) => print('add to cart'))
+                        .catchError((e) => print(e))
+                  }
+              });
+    } else {
+      collectionCart
+          .doc()
+          .set(myCart.toJson())
+          .then((value) => print('add to cart'))
+          .catchError((e) => print(e));
+    }
+  }
+
+  Future<List<MGrocery>> getItmes(String category) async {
+    final queryItems = await FirebaseFirestore.instance
+        .collection('INVENTORY')
+        .where("category", isEqualTo: category)
+        .get();
+    List<QueryDocumentSnapshot> docs = queryItems.docs;
+    final itemlist =
+        docs.map((doc) => MGrocery.fromJson(doc.data(), doc.id)).toList();
+    return itemlist;
+  }
+
+  Future<MGrocery> getItem(String docid) async {
+    DocumentSnapshot item = await FirebaseFirestore.instance
+        .collection('INVENTORY')
+        .doc(docid)
+        .get();
+    return MGrocery.fromJson(item.data(), item.id);
+  }
+
+  Future<void> updateCart(List<MCartItem> cart) {
+    cart.forEach((element) {
+      collectionCart
+          .doc(element.id)
+          .update({'quantity': element.toJson()['quantity']});
+    });
+  }
+
+  Future<void> setOrderDetail() {}
 }
