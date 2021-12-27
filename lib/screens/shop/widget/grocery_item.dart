@@ -32,14 +32,20 @@ class GroceryItem extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Hero(
-                  tag: item.hashCode,
-                  child: Image.network(
-                    item.url,
-                    height: constraints.maxHeight * 0.29,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Image(image: NetworkImageWithRetry(item.url));
-                    },
+                Container(
+                  height: 100,
+                  width: 100,
+                  child: Hero(
+                    tag: item.hashCode,
+                    child: Image.network(
+                      item.url,
+                      height: constraints.maxHeight * 0.29,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image(
+                            image: NetworkImageWithRetry(item.url),
+                            fit: BoxFit.cover);
+                      },
+                    ),
                   ),
                 ),
                 SizedBox(height: 10),

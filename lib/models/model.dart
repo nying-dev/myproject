@@ -108,3 +108,46 @@ class ODetails {
         status: json['deliveryStatus']);
   }
 }
+
+class Costumer {
+  final String fname;
+  final String lname;
+  final String birthdate;
+  final String province;
+  final String municipality;
+  final String baragay;
+  final List<String> medical;
+  final String gender;
+  Costumer(
+      {this.fname,
+      this.lname,
+      this.birthdate,
+      this.province,
+      this.municipality,
+      this.baragay,
+      this.medical,
+      this.gender});
+
+  dynamic toJson() => {
+        'first_name': fname,
+        'last_name': lname,
+        'birth_date': birthdate,
+        'province': province,
+        'municipality': municipality,
+        'barangay': baragay,
+        'medical': medical,
+        'gender': gender
+      };
+
+  factory Costumer.fromJson(Map<String, dynamic> json) {
+    return Costumer(
+        fname: json['first_name'],
+        lname: json['last_name'],
+        birthdate: json['birth_date'],
+        province: json['province'],
+        municipality: json['municipality'],
+        medical: List.from(json['medical']),
+        baragay: json['barangay'],
+        gender: json['gender']);
+  }
+}

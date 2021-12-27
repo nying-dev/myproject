@@ -37,7 +37,9 @@ class _ExpandableState extends State<Expandable>
                   quarterTurns: _expanded ? 3 : 0,
                   child: Icon(Icons.chevron_right),
                 ),
-                onTap: () => setState(() => _expanded = !_expanded),
+                onTap: () => setState(() {
+                  _expanded = !_expanded;
+                }),
               ),
             ],
           ),

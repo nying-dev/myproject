@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:myproject/models/model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:myproject/screens/signUp/widget/tabs_button.dart';
 import 'package:myproject/service/firestore.dart';
 import 'checkout.dart';
 import 'dart:async';
@@ -38,11 +39,13 @@ class _ItemCart extends State<ItemCartPage> {
     return cartList;
   }
 
-  checkOut() {
+  //check out total
+  double checkOut() {
     total = 0.0;
     cartList.forEach((element) {
       total += (element.item.price * element.count);
     });
+    return total;
   }
 
   Future updateQuantity() {
@@ -179,19 +182,23 @@ class _ItemCart extends State<ItemCartPage> {
               ),
             ),
             Expanded(
-                child: MaterialButton(
-                    onPressed: () {
-                      CheckOutPage(
-                        myOrderList: cartList,
-                      );
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CheckOutPage()));
-                    },
-                    child: const Text("Check out",
-                        style: TextStyle(color: Colors.white)),
-                    color: Colors.green))
+                child: RawMaterialButton(
+              onPressed: () {
+                if (!cartList.isEmpty) {
+                  String totals = total.toStringAsFixed(2);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CheckOutPage(
+                                totalPrice: totals,
+                                myOrderList: cartList,
+                              )));
+                }
+              },
+              child: const Text("Check out",
+                  style: TextStyle(color: Colors.white)),
+              fillColor: cartList.length > 0 ? Colors.green : Colors.grey,
+            ))
           ],
         ),
       ),

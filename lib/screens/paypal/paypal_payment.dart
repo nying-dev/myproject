@@ -1,13 +1,12 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
-import 'package:myproject/models/model.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:myproject/service/paypal.dart';
 
 class PaypalPayment extends StatefulWidget {
   final Function onFinish;
-  final List<MCartItem> cartItem;
-  PaypalPayment({this.onFinish, this.cartItem});
+  final String totalAmount;
+  PaypalPayment({this.onFinish, this.totalAmount});
 
   @override
   State<StatefulWidget> createState() {
@@ -16,7 +15,6 @@ class PaypalPayment extends StatefulWidget {
 }
 
 //convert mycart to for item
-class itemList {}
 
 class PaypalPaymentState extends State<PaypalPayment> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -32,8 +30,8 @@ class PaypalPaymentState extends State<PaypalPayment> {
     "currency": "PHP"
   };
 
-  bool isEnableShipping = false;
-  bool isEnableAddress = false;
+  bool isEnableShipping = true;
+  bool isEnableAddress = true;
 
   String returnURL = "return.example.com";
   String cancelURL = "cancel.example.com";
@@ -44,12 +42,10 @@ class PaypalPaymentState extends State<PaypalPayment> {
     Future.delayed(Duration.zero, () async {
       try {
         accessToken = await services.getAccessToken();
-        final transaction = getOrderParams();
+        final transaction = getOrderParams(widget.totalAmount);
         final res =
             await services.createPaypalPayment(transaction, accessToken);
-        print('accessToken :${accessToken}');
-        print('transaction :${transaction}');
-        print('res :${res}');
+        print('paypal total :${widget.totalAmount}');
         if (res != null) {
           setState(() {
             checkoutUrl = res["approvalUrl"];
@@ -76,47 +72,15 @@ class PaypalPaymentState extends State<PaypalPayment> {
   }
 
   //item name,price and quatity
-  String itemName = 'iPhone X';
-  String itemPrice = '1.99';
-  int quantity = 1;
 
   //convert my cart
 
-  Map<String, dynamic> getOrderParams() {
-    List items = [
-      {
-        "name": itemName,
-        "quantity": quantity,
-        "price": itemPrice,
-        "currency": defaultCurrency["currency"]
-      },
-      {
-        "name": itemName,
-        "quantity": quantity,
-        "price": itemPrice,
-        "currency": defaultCurrency["currency"]
-      },
-      {
-        "name": itemName,
-        "quantity": quantity,
-        "price": itemPrice,
-        "currency": defaultCurrency["currency"]
-      }
-    ];
-    //
-    String totalAmount = '1.99';
-    String subTotalAmount = '1.99';
+  Map<String, dynamic> getOrderParams(String total) {
+    String totalAmount = total;
+    String subTotalAmount = total;
     String shippingCost = '0';
     int shippingDiscountCost = 0;
-    String userFirstName = 'Gulshan';
-    String userLastName = 'Yadav';
-    String addressCity = 'Delhi';
-    String addressStreet = 'Mathura Road';
-    String addressZipCode = '110014';
-    String addressCountry = 'India';
-    String addressState = 'Delhi';
-    String addressPhoneNumber = '+919990119091';
-
+    //name
     Map<String, dynamic> temp = {
       "intent": "sale",
       "payer": {"payment_method": "paypal"},
@@ -133,20 +97,6 @@ class PaypalPaymentState extends State<PaypalPayment> {
           },
           "description": "The payment transaction description.",
           "payment_option": {"allowed_payment_method": "INSTAN_FUNDING_SOURCE"},
-          "item_list": {
-            "items": items,
-            if (isEnableShipping && isEnableAddress)
-              "shipping_address": {
-                "recipient_name": userFirstName + " " + userLastName,
-                "line1": addressStreet,
-                "line2": "",
-                "city": addressCity,
-                "country_code": addressCountry,
-                "postal_code": addressZipCode,
-                "phone": addressPhoneNumber,
-                "state": addressState
-              },
-          }
         }
       ],
       "note_to_payer": "Contact us for any questions on your order.",

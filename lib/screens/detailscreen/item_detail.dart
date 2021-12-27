@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:myproject/constants.dart';
 import 'package:myproject/models/model.dart';
-import 'package:myproject/screens/shop/widget/cart_screen.dart';
 import 'package:myproject/service/firestore.dart';
 import 'package:myproject/widget/custom_button.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:myproject/screens/home_page.dart';
 import 'widgets/details.dart';
 import 'widgets/expandable.dart';
 import 'widgets/header.dart';
+import 'package:myproject/recommendation/recommend.dart';
 
 class ItemDetailsSreen extends StatefulWidget {
   final MGrocery item;
@@ -19,7 +20,6 @@ class ItemDetailsSreen extends StatefulWidget {
 
 class _ItemDetailsScreenState extends State<ItemDetailsSreen> {
   static const routeName = 'item-details-screen/';
-
   FirestoreUser firestoreUser = FirestoreUser();
   FirebaseAnalytics analytics;
   var _myColorOne = Colors.grey;
@@ -28,9 +28,19 @@ class _ItemDetailsScreenState extends State<ItemDetailsSreen> {
   var _myColorFour = Colors.grey;
   var _myColorFive = Colors.grey;
   int rating = 0;
-
+  bool addItem = false;
+  var url;
+  var data;
+  Homepage homepage = Homepage();
   @override
   Widget build(BuildContext context) {
+    void _showScaffold(String message) {
+      print(message);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(message),
+      ));
+    }
+
     final MGrocery item = widget.item;
     return Scaffold(
       body: SafeArea(
@@ -131,12 +141,18 @@ class _ItemDetailsScreenState extends State<ItemDetailsSreen> {
                 child: RoundButton(
                   key: Key(''),
                   title: 'Add To Cart',
-                  onTap: () {
-                    firestoreUser.setCart(itemId: item.id);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ItemCartPage()));
+                  onTap: () async {
+                    addItem = await firestoreUser.setCart(itemId: item.id);
+                    if (addItem) {
+                      url = Uri.parse(
+                          "http://192.168.1.112:5000//recommend?item=${item.name}");
+                      data = await get_product(url);
+                      print('recomend${data}');
+                      _showScaffold('Add to cart');
+                      badgecart.value++;
+                    } else {
+                      _showScaffold('Already in cart');
+                    }
                   },
                 ),
               ),

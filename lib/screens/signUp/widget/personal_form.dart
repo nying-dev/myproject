@@ -6,6 +6,7 @@ import 'package:myproject/widget/custom_button.dart';
 import 'package:myproject/widget/custom_input.dart';
 import 'package:myproject/service/firestore.dart';
 import 'package:group_button/group_button.dart';
+import 'package:myproject/models/model.dart';
 
 enum gender { male, female }
 
@@ -30,7 +31,7 @@ class _PersonalFormState extends State<PersonalFormPage> {
   static String municipality;
   static String baranggay;
   static List<String> diatary = [];
-  static String gendr;
+  static String gendr = 'male';
   static gender _gender = gender.male;
   bool alergen = false;
   List<String> groupBtn = const [
@@ -269,9 +270,10 @@ class _PersonalFormState extends State<PersonalFormPage> {
   }
 
   Future _submitForm() async {
+    print(gendr);
     FirestoreUser firestoreUser = FirestoreUser();
     // ignore: avoid_print
-    firestoreUser.setUserInfo(
+    Costumer costumer = Costumer(
         lname: l_name,
         fname: f_name,
         gender: gendr,
@@ -280,6 +282,8 @@ class _PersonalFormState extends State<PersonalFormPage> {
         municipality: municipality,
         baragay: baranggay,
         medical: diatary);
+    print(costumer.toJson());
+    firestoreUser.setUserInfo(costumer);
   }
 }
 
