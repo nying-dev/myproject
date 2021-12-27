@@ -73,27 +73,21 @@ class _LandingPageState extends State<LandingPage> {
                         }
                         return Scaffold(
                           body: Center(
-                            child: Text("Checking Authentication",
-                                style: Constants.regularHeading),
-                          ),
+                            child: CircularProgressIndicator()),
                         );
                       });
                 }
               }
               //connecting the aut state --loadinf
               return Scaffold(
-                body: Center(
-                  child: Text("Checking Authentication",
-                      style: Constants.regularHeading),
-                ),
+                body: Center(child: CircularProgressIndicator()),
               );
             },
           );
         }
         return Scaffold(
           body: Center(
-            child:
-                Text("Initialization App...", style: Constants.regularHeading),
+            child: CircularProgressIndicator(),
           ),
         );
       },
