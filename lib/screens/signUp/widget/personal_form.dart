@@ -31,17 +31,18 @@ class _PersonalFormState extends State<PersonalFormPage> {
   static String municipality;
   static String baranggay;
   static List<String> diatary = [];
+  static List<int> selected = [];
   static String gendr = 'male';
   static gender _gender = gender.male;
   bool alergen = false;
   List<String> groupBtn = const [
-    "Eggs",
-    "Nuts",
-    "Shellfish",
-    "Tomato",
-    "Fish",
-    "Milk",
-    "Soy"
+    "Milk allergy / Lactose intolerance",
+    "Nut Allergy",
+    "Fish Allergy",
+    "Citrus Allergy",
+    "Sugar Allergy / Intolerance",
+    "Beer Allergy",
+    "Soy Allergy"
   ];
   TextEditingController dateinput = TextEditingController();
   //text editing controller for text field
@@ -192,20 +193,20 @@ class _PersonalFormState extends State<PersonalFormPage> {
           Center(
               child: Text("Select diatary restriction",
                   style: Constants.kDescriptionStyle)),
-          CustomBtn(
-              textBtn: "Diabetic",
-              onPressed: () {
-                if (!diatary.contains('diabetic')) {
-                  diatary.add('diabetic');
-                }
-              },
-              onDoubleTap: () {
-                if (diatary.contains('diabetic')) {
-                  diatary.remove('diabetic');
-                }
-              },
-              outlinedBtn: false,
-              isLoading: false),
+          // CustomBtn(
+          //     textBtn: "Diabetic",
+          //     onPressed: () {
+          //       if (!diatary.contains('diabetic')) {
+          //         diatary.add('diabetic');
+          //       }
+          //     },
+          //     onDoubleTap: () {
+          //       if (diatary.contains('diabetic')) {
+          //         diatary.remove('diabetic');
+          //       }
+          //     },
+          //     outlinedBtn: false,
+          //     isLoading: false),
           CustomBtn(
               textBtn: "Food Allergen or Intolerance",
               onPressed: () {
@@ -228,18 +229,19 @@ class _PersonalFormState extends State<PersonalFormPage> {
                 onSelected: (index, isSelected) {
                   print(
                       '${groupBtn[index]} button is ${isSelected ? 'selected' : 'unselected'}');
-                  if (!diatary.contains('${groupBtn[index]}')) {
-                    if (isSelected) {
+                  if (isSelected) {
+                    if (!diatary.contains('${groupBtn[index]}')) {
                       diatary.add('${groupBtn[index]}');
-                    } else {
-                      diatary.remove('${groupBtn[index]}');
+                      selected.add(index);
                     }
+                  } else {
+                    diatary.remove('${groupBtn[index]}');
+                    selected.remove(index);
                   }
-
                   print(diatary);
                 },
                 buttons: groupBtn,
-                selectedButtons: const [0, 1],
+                selectedButtons: selected,
 
                 /// [List<int>] after 2.2.1 version
                 selectedTextStyle: const TextStyle(

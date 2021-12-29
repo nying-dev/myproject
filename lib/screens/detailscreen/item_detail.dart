@@ -9,6 +9,7 @@ import 'widgets/details.dart';
 import 'widgets/expandable.dart';
 import 'widgets/header.dart';
 import 'package:myproject/recommendation/recommend.dart';
+import 'package:myproject/service/record_local.dart';
 
 class ItemDetailsSreen extends StatefulWidget {
   final MGrocery item;
@@ -22,6 +23,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsSreen> {
   static const routeName = 'item-details-screen/';
   FirestoreUser firestoreUser = FirestoreUser();
   FirebaseAnalytics analytics;
+  Record_local record = Record_local();
   var _myColorOne = Colors.grey;
   var _myColorTwo = Colors.grey;
   var _myColorThree = Colors.grey;
@@ -29,7 +31,6 @@ class _ItemDetailsScreenState extends State<ItemDetailsSreen> {
   var _myColorFive = Colors.grey;
   int rating = 0;
   bool addItem = false;
-  var url;
   var data;
   Homepage homepage = Homepage();
   @override
@@ -144,10 +145,8 @@ class _ItemDetailsScreenState extends State<ItemDetailsSreen> {
                   onTap: () async {
                     addItem = await firestoreUser.setCart(itemId: item.id);
                     if (addItem) {
-                      url = Uri.parse(
-                          "http://192.168.1.112:5000//recommend?item=${item.name}");
-                      data = await get_product(url);
-                      print('recomend${data}');
+                      data = await get_product(item.name);
+                      record.write_read(data);
                       _showScaffold('Add to cart');
                       badgecart.value++;
                     } else {

@@ -5,7 +5,7 @@ import 'package:myproject/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:myproject/mq.dart';
 
-import 'widget/categoryselection.dart';
+import 'package:myproject/screens/category/categoryselection.dart';
 import 'widget/banners.dart';
 import 'widget/exclusive.dart';
 
@@ -27,7 +27,7 @@ class ShopScreen extends StatelessWidget {
               ),
               _buildSectiontitle("Category", () {}),
               SelectionCategory(),
-              _buildSectiontitle('Recommend for you', () {
+              _buildSectiontitle('Recommend', () {
                 print("recommend for you");
               }),
               ExclusiveOffers(
