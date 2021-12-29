@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:myproject/models/model.dart';
 import 'dart:async';
+import 'package:myproject/service/record_local.dart';
 
 class FirestoreUser {
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -13,7 +14,7 @@ class FirestoreUser {
       FirebaseFirestore.instance.collection('Cart');
   CollectionReference collectionOrder =
       FirebaseFirestore.instance.collection('Order');
-
+  Record_local recordlocal = Record_local();
   SnackBar snackBar;
 
   String Uid() {
@@ -24,7 +25,6 @@ class FirestoreUser {
 
   Future<void> setUserInfo(Costumer costumer) async {
     String uid = Uid() as String;
-
     collectionUser
         .doc(uid)
         .set(costumer.toJson())
@@ -94,5 +94,27 @@ class FirestoreUser {
           .doc(element.id)
           .update({'quantity': element.toJson()['quantity']});
     });
+  }
+
+  CollectionReference inventory =
+      FirebaseFirestore.instance.collection('INVENTORY');
+
+  Future<List<MGrocery>> recommend_list() async {
+    var itemlist = await recordlocal.read_record();
+    List<MGrocery> items = [];
+    for (String i in itemlist) {
+      i = i.replaceAll("'", "");
+      i = i.replaceAll(" ", "");
+      DocumentSnapshot doc = await inventory.doc(i).get();
+      print('Data:${doc.data()}');
+      items.add(MGrocery.fromJson(doc.data(), i));
+      print(i);
+    }
+    print('items:${items}');
+    return items;
+  }
+
+  Future<List<MGrocery>> recommend_health(String list) {
+        
   }
 }

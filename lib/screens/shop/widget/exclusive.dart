@@ -18,16 +18,18 @@ class _ExclusiveOffersState extends State<ExclusiveOffers> {
   Future<List<MGrocery>> _future;
   List<MGrocery> itemlist = [];
   FirestoreUser firestoreUser = FirestoreUser();
+  var data;
   //data from firestore
 
   @override
   void initState() {
-    _future = firestoreUser.getItmes("Condiments");
+    _future = firestoreUser.recommend_list();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print(data);
     return Container(
         height: MQuery.height * 0.35,
         child: FutureBuilder(
