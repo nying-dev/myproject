@@ -3,7 +3,6 @@ import 'package:myproject/constants.dart';
 import 'package:myproject/models/model.dart';
 import 'package:myproject/service/firestore.dart';
 import 'package:myproject/widget/custom_button.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:myproject/screens/home_page.dart';
 import 'widgets/details.dart';
 import 'widgets/expandable.dart';
@@ -22,7 +21,6 @@ class ItemDetailsSreen extends StatefulWidget {
 class _ItemDetailsScreenState extends State<ItemDetailsSreen> {
   static const routeName = 'item-details-screen/';
   FirestoreUser firestoreUser = FirestoreUser();
-  FirebaseAnalytics analytics;
   Record_local record = Record_local();
   var _myColorOne = Colors.grey;
   var _myColorTwo = Colors.grey;

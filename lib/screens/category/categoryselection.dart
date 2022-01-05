@@ -4,8 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:myproject/models/model.dart';
 import 'package:myproject/service/firestore.dart';
 import 'package:myproject/mq.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:myproject/screens/shop/widget/grocery_item.dart';
+import 'package:myproject/recommendation/recommend.dart';
 
 class SelectionCategory extends StatelessWidget {
   @override
@@ -135,13 +135,57 @@ class _categoryItemState extends State<CategoryItem> {
 
   @override
   void initState() {
-    _items = firestoreUser.getItmes(widget.database);
+    print('${widget.category}');
+    if (widget.category == 'For you') {
+      _items = firestoreUser.recommend_health();
+    } else {
+      _items = firestoreUser.getItmes(widget.database);
+    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Drawer Header'),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+            ),
+            ListTile(
+              title: Text('Food'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                setState(() {
+                  category = 'Food';
+                });
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Beverages'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                setState(() {
+                  category = 'Beverages';
+                });
+
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: Text(
           widget.category,

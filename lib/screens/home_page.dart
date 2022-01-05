@@ -6,7 +6,7 @@ import 'package:myproject/screens/profile/profile.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:badges/badges.dart';
 import 'package:myproject/screens/shop/widget/cart_screen.dart';
-import 'shop/widget/search.dart';
+import 'package:myproject/service/analytic.dart';
 
 //TODO 1st: ValueNotifier declaration
 final badgecart = ValueNotifier<int>(0);
@@ -19,6 +19,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   PageController _tabsPageController = PageController();
+  AnalyticServices analyticservices = AnalyticServices();
   int _selectedTab = 0;
   String firstWord = 'My ';
   String sencondWord = 'Grocery';
@@ -38,6 +39,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
+    analyticservices.testSetCurrentScreen(screenName: 'Home');
     return Scaffold(
         appBar: AppBar(
           elevation: 0.0,

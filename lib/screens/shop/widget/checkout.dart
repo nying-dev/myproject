@@ -4,7 +4,6 @@ import 'package:myproject/screens/paypal/paypal_payment.dart';
 import 'package:myproject/service/firestore.dart';
 import 'package:myproject/models/model.dart';
 
-
 class CheckOutPage extends StatefulWidget {
   final List<MCartItem> myOrderList;
   final String totalPrice;
@@ -21,7 +20,7 @@ class _CheckOutState extends State<CheckOutPage> {
 
   Future<Costumer> costumer() async {
     final getUser = await firestoreUser.getUserInfo();
-    print('get user:${getUser}');
+    print('get user:${getUser.medical}');
     return getUser;
   }
 

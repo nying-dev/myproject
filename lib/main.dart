@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart'; // new
 import 'package:myproject/screens/landing_page.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
+import 'package:myproject/service/analytic.dart';
 
 void main() {
   // Modify from here
@@ -13,9 +12,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  static FirebaseAnalytics _analytics = new FirebaseAnalytics();
-  static FirebaseAnalyticsObserver _observer =
-      new FirebaseAnalyticsObserver(analytics: _analytics);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,7 +21,7 @@ class MyApp extends StatelessWidget {
           ),
           // ignore: deprecated_member_use
           accentColor: Color(0xff20df35)),
-      navigatorObservers: <NavigatorObserver>[_observer],
+      navigatorObservers: <NavigatorObserver>[AnalyticServices.observer],
       home: LandingPage(),
     );
   }

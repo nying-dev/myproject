@@ -19,12 +19,10 @@ class Record_local {
   Future<List<String>> read_record() async {
     try {
       final file = await _localFile;
-
       // Read the file
       var contents = await file.readAsString();
-      contents = contents.replaceAll("[", "");
-      contents = contents.replaceAll("]", "");
-      return contents.split(',').toList();
+
+      return await str_to_arr(contents);
     } catch (e) {
       // If encountering an error, return 0
       return e;
@@ -36,5 +34,13 @@ class Record_local {
     print("write text :${recommend}");
     // Write the file
     return file.writeAsString('$recommend');
+  }
+
+  Future<List<String>> str_to_arr(String array) async {
+    List<String> array_string;
+    array = array.replaceAll("[", "");
+    array = array.replaceAll("]", "");
+    array_string = array.split(',').toList();
+    return array_string;
   }
 }

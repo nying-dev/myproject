@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:myproject/models/model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:myproject/screens/signUp/widget/tabs_button.dart';
+import 'package:myproject/service/analytic.dart';
 import 'package:myproject/service/firestore.dart';
 import 'checkout.dart';
 import 'dart:async';
@@ -19,6 +19,7 @@ class _ItemCart extends State<ItemCartPage> {
   List<MCartItem> cartList = [];
   List<MCartItem> list = [];
   FirestoreUser firestoreUser = FirestoreUser();
+  AnalyticServices analyticServices = AnalyticServices();
 
   //get product list
   Future<List<MCartItem>> _getProducts() async {
@@ -185,6 +186,7 @@ class _ItemCart extends State<ItemCartPage> {
                 child: RawMaterialButton(
               onPressed: () {
                 if (!cartList.isEmpty) {
+                  analyticServices.sendAnalyticsEvent(cartList);
                   String totals = total.toStringAsFixed(2);
                   Navigator.push(
                       context,

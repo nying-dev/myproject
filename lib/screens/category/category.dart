@@ -1,7 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:myproject/screens/category/categoryselection.dart';
-import 'package:flutter_svg/svg.dart';
-import 'categoryselection.dart';
 
 class Category extends StatelessWidget {
   const Category({Key key}) : super(key: key);

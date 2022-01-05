@@ -54,6 +54,13 @@ class Profile extends StatelessWidget {
                                             fontSize: 20,
                                           ),
                                         ),
+                                        Text(
+                                          'Allergy : ${snapshot.data.medical.join(',')}',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 10,
+                                          ),
+                                        ),
                                         TextButton(
                                           onPressed: () {},
                                           child: Text('Edit profile'),

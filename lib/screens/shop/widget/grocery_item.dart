@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myproject/models/model.dart';
 import 'package:myproject/screens/detailscreen/item_detail.dart';
 import 'package:flutter_image/network.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:myproject/constants.dart';
 import 'package:myproject/mq.dart';
 
@@ -41,8 +41,14 @@ class GroceryItem extends StatelessWidget {
                       item.url,
                       height: constraints.maxHeight * 0.29,
                       errorBuilder: (context, error, stackTrace) {
-                        return Image(
-                            image: NetworkImageWithRetry(item.url),
+                        return CachedNetworkImage(
+                            progressIndicatorBuilder:
+                                (context, url, progress) => Center(
+                                      child: CircularProgressIndicator(
+                                        value: progress.progress,
+                                      ),
+                                    ),
+                            imageUrl: item.url,
                             fit: BoxFit.cover);
                       },
                     ),

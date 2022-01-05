@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:myproject/models/model.dart';
 import 'dart:async';
 import 'package:myproject/service/record_local.dart';
+import 'package:myproject/recommendation/recommend.dart';
 
 class FirestoreUser {
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -114,7 +115,16 @@ class FirestoreUser {
     return items;
   }
 
-  Future<List<MGrocery>> recommend_health(String list) {
-        
+  Future<List<MGrocery>> recommend_health() async {
+    String ids = await get_health();
+    var id_items = await recordlocal.str_to_arr(ids);
+    List<MGrocery> items = [];
+    for (var i in id_items) {
+      i = i.replaceAll("'", "");
+      i = i.replaceAll(" ", "");
+      DocumentSnapshot doc = await inventory.doc(i).get();
+      items.add(MGrocery.fromJson(doc.data(), i));
+    }
+    return items;
   }
 }
